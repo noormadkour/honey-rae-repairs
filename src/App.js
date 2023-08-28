@@ -1,23 +1,67 @@
-import { useState } from "react"
+import { useEffect, useState } from "react";
+import { getAllTickets } from "./services/ticketServices.js";
+import "./App.css";
 
 export const App = () => {
-  const [count, setCount] = useState(0)
+  const [allTickets, setAllTickets] = useState([]);
+  const [showEmergencyOnly, setShowEmergencyOnly] = useState(false);
+  const [filteredTickets, setFilteredTickets] = useState([]);
 
-  const handleButtonClick = () => {
-    setCount(count + 1)
-  }
+  useEffect(() => {
+    getAllTickets().then((ticketsArray) => {
+      setAllTickets(ticketsArray);
+      console.log("tickets set!");
+    });
+  }, []); //runs on initial render only while the array is empty
 
-  const resetCountButton = () => {
-    setCount(0)
-  }
+  useEffect(() => {
+    if (showEmergencyOnly) {
+      const emergencyTickets = allTickets.filter(
+        (ticket) => ticket.emergency === true
+      );
+      setFilteredTickets(emergencyTickets);
+    } else {
+      setFilteredTickets(allTickets)
+    }
+  }, [showEmergencyOnly, allTickets]);
 
   return (
-    <>
-      <h1>Hello World!</h1>
-      <div>Check out this cool clicker!</div>
-      <button className="btn-secondary" onClick={handleButtonClick}>Click me if you dare</button>
-      <div>Count: {count}</div>
-      <button className="btn-primary" onClick={resetCountButton}>Reset</button>
-    </>
-      )
-}
+    <div className="tickets-container">
+      <h2>Tickets</h2>
+      <div>
+        <button
+          className="filter-btn btn-primary"
+          onClick={() => {
+            setShowEmergencyOnly(true);
+          }}
+        >
+          Emergency
+        </button>
+        <button
+          className="show-all-btn btn-primary"
+          onClick={() => {
+            setShowEmergencyOnly(false);
+          }}
+        >
+          Show all
+        </button>
+      </div>
+      <article className="tickets">
+        {filteredTickets.map((ticket) => {
+          return (
+            <section className="ticket" key={ticket.id}>
+              <header className="ticket-info">#{ticket.id}</header>
+              <div>{ticket.description}</div>
+              <footer>
+                <div>
+                  <div className="ticket-info">emergency</div>
+                  <div>{ticket.emergency ? "yes" : "no"}</div>
+                </div>
+              </footer>
+            </section>
+          );
+        })}
+      </article>
+    </div>
+  );
+};
