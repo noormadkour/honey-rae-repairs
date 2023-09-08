@@ -10,9 +10,11 @@ export const Ticket = ({ ticket }) => {
   }, []);
 
   useEffect(() => {
-    const matchingEmployee = employees.find(employee => employee.id === ticket.employeeTickets[0]?.employeeId)
-    setAssignedEmployee(matchingEmployee)
-  }, [employees, ticket])
+    const matchingEmployee = employees.find(
+      (employee) => employee.id === ticket.employeeTickets[0]?.employeeId
+    );
+    setAssignedEmployee(matchingEmployee);
+  }, [employees, ticket]);
 
   return (
     <section className="ticket">
@@ -20,8 +22,10 @@ export const Ticket = ({ ticket }) => {
       <div>{ticket.description}</div>
       <footer>
         <div>
-            <div className="ticket-info">assignee</div>
-            <div>{assignedEmployee ? assignedEmployee.user?.fullName : "None"}</div>
+          <div className="ticket-info">assignee</div>
+          <div>
+            {assignedEmployee ? assignedEmployee.user?.fullName : "None"}
+          </div>
         </div>
         <div>
           <div className="ticket-info">emergency</div>
